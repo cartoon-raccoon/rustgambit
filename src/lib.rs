@@ -1,24 +1,6 @@
 pub mod pieces; 
-
-pub struct Board {
-    
-}
-
-pub enum Piece {
-    Pawn{
-        colour: Colour,
-        data: PieceAttr
-    }
-}
-
-pub enum Colour {
-    Black,
-    White,
-}
-
-pub struct PieceAttr {
-
-}
+pub mod board;
+pub mod moves;
 
 #[cfg(test)]
 mod tests {
