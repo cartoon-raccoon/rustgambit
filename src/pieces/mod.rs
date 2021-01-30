@@ -46,6 +46,53 @@ pub enum PieceType {
     Empty,
 }
 
+impl PieceType {
+    pub fn as_char(&self) -> char {
+        use PieceType::*;
+        use Colour::*;
+
+        match self {
+            Pawn {colour,..} => {
+                match colour {
+                    White => 'P',
+                    Black => 'p',
+                }
+            }
+            Rook {colour,..} => {
+                match colour {
+                    White => 'R',
+                    Black => 'r',
+                }
+            }
+            Knight {colour,..} => {
+                match colour {
+                    White => 'N',
+                    Black => 'n',
+                }
+            }
+            Bishop {colour,..} => {
+                match colour {
+                    White => 'B',
+                    Black => 'b',
+                }
+            }
+            Queen {colour,..} => {
+                match colour {
+                    White => 'Q',
+                    Black => 'q',
+                }
+            }
+            King {colour,..} => {
+                match colour {
+                    White => 'K',
+                    Black => 'k',
+                }
+            }
+            Empty => ' '
+        }
+    }
+}
+
 #[derive(Clone, Copy)]
 pub enum Colour {
     Black,
