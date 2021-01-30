@@ -1,6 +1,9 @@
 pub mod pawn;
 pub mod rook;
 pub mod knight;
+pub mod bishop;
+pub mod queen;
+pub mod king;
 
 use crate::moves::MoveSet;
 use crate::board::Board;
@@ -8,6 +11,9 @@ use crate::board::Board;
 pub use pawn::Pawn;
 pub use rook::Rook;
 pub use knight::Knight;
+pub use bishop::Bishop;
+pub use queen::Queen;
+pub use king::King;
 
 pub trait Piece {
     fn move_piece(&self, board: &mut Board);
@@ -32,14 +38,17 @@ pub enum PieceType {
         pos: Position,
     },
     Bishop {
+        piece: Bishop,
         colour: Colour,
         pos: Position,
     },
     Queen {
+        piece: Queen,
         colour: Colour,
         pos: Position,
     },
     King {
+        piece: King,
         colour: Colour,
         pos: Position,
     },
