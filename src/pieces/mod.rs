@@ -1,16 +1,39 @@
 pub mod pawn;
 
 use crate::moves::MoveSet;
+use crate::board::Board;
+use pawn::Pawn;
 
 pub trait Piece {
-    fn move_piece();
-    fn evaluate_moves() -> MoveSet;
+    fn move_piece(&self, board: &mut Board);
+    fn evaluate_moves(&self, board: &mut Board) -> MoveSet;
 }
 
 pub enum PieceType {
     Pawn{
+        piece: Pawn,
         colour: Colour,
-        data: PieceAttr
+        pos: Position,
+    },
+    Rook {
+        colour: Colour,
+        pos: Position,
+    },
+    Knight {
+        colour: Colour,
+        pos: Position,
+    },
+    Bishop {
+        colour: Colour,
+        pos: Position,
+    },
+    Queen {
+        colour: Colour,
+        pos: Position,
+    },
+    King {
+        colour: Colour,
+        pos: Position,
     }
 }
 
@@ -19,6 +42,7 @@ pub enum Colour {
     White,
 }
 
-pub struct PieceAttr {
-
+pub struct Position {
+    pub col: usize,
+    pub row: usize,
 }
