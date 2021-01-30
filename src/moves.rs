@@ -56,6 +56,14 @@ impl<'a> AsRef<[Move]> for MoveSet {
     }
 }
 
+impl<'a> AsMut<[Move]> for MoveSet {
+
+    #[inline]
+    fn as_mut(&mut self) -> &mut [Move] {
+        &mut self.moves
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct MoveSetIter<'a> {
     idx: usize,
