@@ -4,7 +4,7 @@ use crate::board::Board;
 
 pub const POINTS: u8 = 3;
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct Knight;
 
 impl Piece for Knight {

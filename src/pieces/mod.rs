@@ -14,7 +14,7 @@ pub trait Piece {
     fn evaluate_moves(&self, board: &mut Board) -> MoveSet;
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum PieceType {
     Pawn{
         piece: Pawn,
@@ -93,13 +93,13 @@ impl PieceType {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Colour {
     Black,
     White,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub struct Position {
     pub row: usize,
     pub col: usize,

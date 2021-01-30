@@ -4,7 +4,7 @@ use crate::board::Board;
 
 pub const POINTS: u8 = 5;
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct Rook;
 
 impl Piece for Rook {
