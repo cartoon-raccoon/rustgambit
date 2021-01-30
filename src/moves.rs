@@ -1,4 +1,5 @@
 use std::ops::{Deref, DerefMut};
+use std::convert::AsRef;
 
 pub struct MoveSet {
     moves: Vec<Move>
@@ -13,16 +14,25 @@ impl Iterator for MoveSet {
 }
 
 impl Deref for MoveSet {
-    type Target = MoveSetIter<'a>;
+    type Target = [Move];
 
-
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.moves
+    }
 }
 
 impl DerefMut for MoveSet {
-    type Target = MoveSetIter<'a>;
 
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        
+    #[inline]
+    fn deref_mut(&mut self) -> &mut [Move] {
+        &mut self.moves
+    }
+}
+
+impl<'a> AsRef<[Move]> for MoveSet {
+    fn as_ref(&self) -> &[Move] {
+        &self.moves
     }
 }
 
