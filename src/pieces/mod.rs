@@ -1,4 +1,5 @@
 pub mod pawn;
+pub mod knight;
 
 use crate::moves::MoveSet;
 use crate::board::Board;
