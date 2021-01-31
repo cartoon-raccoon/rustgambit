@@ -8,6 +8,8 @@ use crate::moves::{Move, MoveMarker};
 pub struct Board {
     pub board: [[PieceType; 8]; 8],
     turn: Colour,
+    // indicates which king is being checked
+    check: Option<Colour>,
     white_cap: Vec<PieceType>,
     black_cap: Vec<PieceType>,
 }
@@ -17,6 +19,7 @@ impl Board {
         Board{
             board: [[PieceType::Empty; 8]; 8],
             turn: Colour::White,
+            check: None,
             white_cap: Vec::new(),
             black_cap: Vec::new(),
         }
@@ -148,10 +151,39 @@ impl Board {
         }
     }
 
+    pub fn find_king(&self, c: Colour) -> (usize, usize) {
+        let mut kingpos = (0, 0);
+
+        for i in 0..8 {
+            kingpos.0 = i;
+            for j in 0..8 {
+                kingpos.1 = j;
+                if let PieceType::King(k) = self[i][j] {
+                    if k.colour() == c {
+                        return kingpos
+                    }
+                }
+            }
+        }
+
+        unreachable!("unreachable code in Board::find_king()")
+    }
+
+    #[inline]
+    pub fn is_in_check(&self) -> bool {
+        if let Some(_) = self.check {
+            true
+        } else {
+            false
+        }
+    }
+
+    #[inline]
     pub fn black(&self) -> &[PieceType] {
         &self.black_cap
     }
 
+    #[inline]
     pub fn white(&self) -> &[PieceType] {
         &self.white_cap
     }
@@ -185,12 +217,15 @@ impl fmt::Display for Board {
 impl Index<usize> for Board {
     type Output = [PieceType; 8];
 
+    #[inline]
     fn index(&self, idx: usize) -> &Self::Output {
         &self.board[idx]
     }
 }
 
 impl IndexMut<usize> for Board {
+
+    #[inline]
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         &mut self.board[idx]
     }
@@ -242,5 +277,15 @@ mod tests {
 ";
 
         assert_eq!(board.to_string(), test_board)
+    }
+
+    #[test]
+    fn test_find_king() {
+        let board = Board::init();
+        let black_k = board.find_king(Colour::Black);
+        let white_k = board.find_king(Colour::White);
+
+        assert_eq!(black_k, (7, 4));
+        assert_eq!(white_k, (0, 4));
     }
 }
