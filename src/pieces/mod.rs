@@ -19,7 +19,7 @@ pub use king::King;
 pub trait Piece {
     fn config(row: usize, col: usize, colour: Colour) -> Self;
     fn colour(&self) -> Colour;
-    fn evaluate_moves(&self, board: &mut Board) -> MoveSet;
+    fn evaluate_moves(&self, board: &Board) -> MoveSet;
 }
 
 /// Defines the type of Piece.
@@ -117,4 +117,10 @@ pub enum Colour {
 pub struct Position {
     pub row: usize,
     pub col: usize,
+}
+
+impl Position {
+    pub fn as_tuple(&self) -> (usize, usize) {
+        (self.row, self.col)
+    }
 }
