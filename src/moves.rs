@@ -13,6 +13,7 @@ pub trait MoveMarker {
 /// Returned by `Piece::evaluate_moves`.
 #[derive(Clone)]
 pub struct MoveSet {
+    is_checking: bool,
     moves: Vec<Move>
 }
 
@@ -29,13 +30,25 @@ impl MoveSet {
         }
 
         MoveSet {
+            is_checking: false,
             moves: moves
+        }
+    }
+
+    pub fn is_check() -> Self {
+        MoveSet {
+            is_checking: true,
+            moves: Vec::new(),
         }
     }
 
     /// Returns the number of Moves in the MoveSet
     pub fn len(&self) -> usize {
         self.moves.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.moves.is_empty()
     }
 
     /// Returns an iterator over the contents of the MoveSet

@@ -39,11 +39,17 @@ impl Piece for Pawn {
                 }
                 if !board[o.0 + 1][o.1 + 1].is_empty() {
                     if board[o.0 + 1][o.1 + 1].colour() != Some(White) {
+                        if board[o.0 + 1][o.1 + 1].is_king() {
+                            return MoveSet::is_check()
+                        }
                         moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
                     }
                 }
                 if !board[o.0 + 1][o.1 - 1].is_empty() {
-                    if board[o.0 + 1][o.1 - 1].colour() != Some(White) {                    
+                    if board[o.0 + 1][o.1 - 1].colour() != Some(White) { 
+                        if board[o.0 + 1][o.1 - 1].is_king() {
+                            return MoveSet::is_check()
+                        }                   
                         moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
                     }
                 }
@@ -54,12 +60,18 @@ impl Piece for Pawn {
                     moves.push(Move::construct(o, (o.0 + 1, o.1)))
                 }
                 if !board[o.0 - 1][o.1 + 1].is_empty() {
-                    if board[o.0 - 1][o.1 + 1].colour() != Some(White) {
+                    if board[o.0 - 1][o.1 + 1].colour() != Some(Black) {
+                        if board[o.0 - 1][o.1 + 1].is_king() {
+                            return MoveSet::is_check()
+                        }
                         moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
                     }
                 }
                 if !board[o.0 - 1][o.1 - 1].is_empty() {
-                    if board[o.0 - 1][o.1 - 1].colour() != Some(White) {                    
+                    if board[o.0 - 1][o.1 - 1].colour() != Some(Black) {  
+                        if board[o.0 - 1][o.1 - 1].is_king() {
+                            return MoveSet::is_check()
+                        }                  
                         moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
                     }
                 }
