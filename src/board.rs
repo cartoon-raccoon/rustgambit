@@ -1,5 +1,6 @@
 use std::fmt;
 use std::error::Error;
+use std::ops::{Index, IndexMut};
 
 use crate::pieces::*;
 use crate::moves::{Move, MoveMarker};
@@ -164,6 +165,37 @@ impl Board {
     }
 }
 
+impl fmt::Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut buf = String::new();
+
+        for col in self.board.iter().rev() {
+            buf.push('|');
+            for row in col.iter() {
+                buf.push(row.as_char());
+                buf.push('|');
+            }
+            buf.push('\n');
+        }
+
+        write!(f, "{}", buf)
+    }
+}
+
+impl Index<usize> for Board {
+    type Output = [PieceType; 8];
+
+    fn index(&self, idx: usize) -> &Self::Output {
+        &self.board[idx]
+    }
+}
+
+impl IndexMut<usize> for Board {
+    fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
+        &mut self.board[idx]
+    }
+}
+
 #[non_exhaustive]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum GameError {
@@ -187,23 +219,6 @@ impl fmt::Display for GameError {
                 write!(f, "Space on board is empty")
             }
         }
-    }
-}
-
-impl fmt::Display for Board {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut buf = String::new();
-
-        for col in self.board.iter().rev() {
-            buf.push('|');
-            for row in col.iter() {
-                buf.push(row.as_char());
-                buf.push('|');
-            }
-            buf.push('\n');
-        }
-
-        write!(f, "{}", buf)
     }
 }
 
