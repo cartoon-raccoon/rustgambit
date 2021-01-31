@@ -98,8 +98,8 @@ impl Iterator for MoveSetIntoIter {
 
 #[derive(Copy, Clone, Debug)]
 pub struct Move {
-    target: (u8, u8),
-    origin: (u8, u8),
+    pub target: (usize, usize),
+    pub origin: (usize, usize),
 }
 
 //todo: implement Display and Debug
