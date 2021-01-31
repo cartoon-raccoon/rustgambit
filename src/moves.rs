@@ -8,6 +8,9 @@ pub trait MoveMarker {
     fn origin(&self) -> (usize, usize);
 }
 
+/// Contains the set of Moves that a particular piece can take.
+/// 
+/// Returned by `Piece::evaluate_moves`.
 #[derive(Clone)]
 pub struct MoveSet {
     moves: Vec<Move>
@@ -20,8 +23,8 @@ impl MoveSet {
     pub fn from<T: IntoIterator>(iter: T) -> Self
     where T::Item: MoveMarker {
         let mut moves = Vec::new();
-        
-        for item in iter.into_iter() {
+
+        for item in iter {
             moves.push(Move::construct(item.target(), item.origin()));
         }
 
@@ -29,10 +32,15 @@ impl MoveSet {
             moves: moves
         }
     }
+
+    /// Returns the number of Moves in the MoveSet
     pub fn len(&self) -> usize {
         self.moves.len()
     }
 
+    /// Returns an iterator over the contents of the MoveSet
+    /// 
+    /// Borrows the Moves immutably, there is no mutable implementation.
     pub fn iter(&self) -> MoveSetIter<'_> {
         MoveSetIter {
             idx: 0,
@@ -69,7 +77,7 @@ impl DerefMut for MoveSet {
     }
 }
 
-impl<'a> AsRef<[Move]> for MoveSet {
+impl AsRef<[Move]> for MoveSet {
 
     #[inline]
     fn as_ref(&self) -> &[Move] {
@@ -138,7 +146,7 @@ impl MoveMarker for Move {
     }
 
     fn origin(&self) -> (usize, usize) {
-        self.target
+        self.origin
     }
 }
 
