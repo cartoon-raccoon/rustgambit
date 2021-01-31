@@ -16,7 +16,7 @@ pub use queen::Queen;
 pub use king::King;
 
 pub trait Piece {
-    fn move_piece(&self, board: &mut Board);
+    //fn move_piece(&self, board: &mut Board);
     fn evaluate_moves(&self, board: &mut Board) -> MoveSet;
 }
 
@@ -56,6 +56,28 @@ pub enum PieceType {
 }
 
 impl PieceType {
+
+    #[inline]
+    pub fn colour(&self) -> Option<Colour> {
+        use PieceType::*;
+
+        match self {
+            Empty => None,
+            Pawn {colour,..} => Some(*colour),
+            Knight {colour,..} => Some(*colour),
+            Bishop {colour,..} => Some(*colour),
+            Rook {colour,..} => Some(*colour),
+            Queen {colour,..} => Some(*colour),
+            King {colour,..} => Some(*colour),
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        if let PieceType::Empty = self {
+            return true
+        }
+        false
+    }
     pub fn as_char(&self) -> char {
         use PieceType::*;
         use Colour::*;
