@@ -53,8 +53,16 @@ impl PieceType {
     }
 
     /// Returns true if the PieceType is Empty.
+    #[inline]
     pub fn is_empty(&self) -> bool {
         if let PieceType::Empty = self {
+            return true
+        }
+        false
+    }
+
+    pub fn is_king(&self) -> bool {
+        if let PieceType::King(_) = self {
             return true
         }
         false

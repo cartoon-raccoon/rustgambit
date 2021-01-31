@@ -38,10 +38,14 @@ impl Piece for Pawn {
                     moves.push(Move::construct(o, (o.0 + 1, o.1)))
                 }
                 if !board[o.0 + 1][o.1 + 1].is_empty() {
-                    moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                    if board[o.0 + 1][o.1 + 1].colour() != Some(White) {
+                        moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                    }
                 }
                 if !board[o.0 + 1][o.1 - 1].is_empty() {
-                    moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                    if board[o.0 + 1][o.1 - 1].colour() != Some(White) {                    
+                        moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                    }
                 }
             }
 
@@ -50,10 +54,14 @@ impl Piece for Pawn {
                     moves.push(Move::construct(o, (o.0 + 1, o.1)))
                 }
                 if !board[o.0 - 1][o.1 + 1].is_empty() {
-                    moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                    if board[o.0 - 1][o.1 + 1].colour() != Some(White) {
+                        moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                    }
                 }
                 if !board[o.0 - 1][o.1 - 1].is_empty() {
-                    moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                    if board[o.0 - 1][o.1 - 1].colour() != Some(White) {                    
+                        moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                    }
                 }
             }
         }
