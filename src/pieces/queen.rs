@@ -26,7 +26,7 @@ impl Piece for Queen {
         self.colour
     }
     
-    fn evaluate_moves(&self, board: &mut Board) -> MoveSet {
+    fn evaluate_moves(&self, board: &Board) -> MoveSet {
         unimplemented!()
     }
 }
