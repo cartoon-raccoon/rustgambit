@@ -15,106 +15,89 @@ pub use bishop::Bishop;
 pub use queen::Queen;
 pub use king::King;
 
+/// Defines the basic moves a piece can take.
 pub trait Piece {
-    //fn move_piece(&self, board: &mut Board);
+    fn config(row: usize, col: usize, colour: Colour) -> Self;
+    fn colour(&self) -> Colour;
     fn evaluate_moves(&self, board: &mut Board) -> MoveSet;
 }
 
+/// Defines the type of Piece.
 #[derive(Clone, Copy, PartialEq)]
 pub enum PieceType {
-    Pawn{
-        piece: Pawn,
-        colour: Colour,
-        pos: Position,
-    },
-    Rook {
-        piece: Rook,
-        colour: Colour,
-        pos: Position,
-    },
-    Knight {
-        piece: Knight,
-        colour: Colour,
-        pos: Position,
-    },
-    Bishop {
-        piece: Bishop,
-        colour: Colour,
-        pos: Position,
-    },
-    Queen {
-        piece: Queen,
-        colour: Colour,
-        pos: Position,
-    },
-    King {
-        piece: King,
-        colour: Colour,
-        pos: Position,
-    },
+    Pawn(Pawn),
+    Rook(Rook),
+    Knight(Knight),
+    Bishop(Bishop),
+    Queen(Queen),
+    King(King),
     Empty,
 }
 
 impl PieceType {
 
+    /// Returns the colour of the PieceType.
     #[inline]
     pub fn colour(&self) -> Option<Colour> {
         use PieceType::*;
 
         match self {
             Empty => None,
-            Pawn {colour,..} => Some(*colour),
-            Knight {colour,..} => Some(*colour),
-            Bishop {colour,..} => Some(*colour),
-            Rook {colour,..} => Some(*colour),
-            Queen {colour,..} => Some(*colour),
-            King {colour,..} => Some(*colour),
+            Pawn(p) => Some(p.colour()),
+            Knight(n) => Some(n.colour()),
+            Bishop(b) => Some(b.colour()),
+            Rook(r) => Some(r.colour()),
+            Queen(q)=> Some(q.colour()),
+            King(k) => Some(k.colour()),
         }
     }
 
+    /// Returns true if the PieceType is Empty.
     pub fn is_empty(&self) -> bool {
         if let PieceType::Empty = self {
             return true
         }
         false
     }
+
+    /// Returns the corresponding notation for the piece.
     pub fn as_char(&self) -> char {
         use PieceType::*;
         use Colour::*;
 
         match self {
-            Pawn {colour,..} => {
-                match colour {
+            Pawn(p) => {
+                match p.colour() {
                     White => 'P',
                     Black => 'p',
                 }
             }
-            Rook {colour,..} => {
-                match colour {
+            Rook(p) => {
+                match p.colour() {
                     White => 'R',
                     Black => 'r',
                 }
             }
-            Knight {colour,..} => {
-                match colour {
+            Knight(p) => {
+                match p.colour() {
                     White => 'N',
                     Black => 'n',
                 }
             }
-            Bishop {colour,..} => {
-                match colour {
+            Bishop(p) => {
+                match p.colour() {
                     White => 'B',
                     Black => 'b',
                 }
             }
-            Queen {colour,..} => {
-                match colour {
+            Queen(p) => {
+                match p.colour() {
                     White => 'Q',
                     Black => 'q',
                 }
             }
-            King {colour,..} => {
-                match colour {
+            King(p) => {
+                match p.colour() {
                     White => 'K',
                     Black => 'k',
                 }
