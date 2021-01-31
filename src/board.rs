@@ -130,7 +130,7 @@ impl Board {
         };
 
         //initializing pawns
-        for i in 0..7 {
+        for i in 0..8 {
             self.board[1][i] = PieceType::Pawn {
                 piece: Pawn,
                 colour: White,
@@ -176,7 +176,7 @@ impl fmt::Display for Board {
 
         for col in self.board.iter().rev() {
             buf.push('|');
-            for row in col.iter().rev() {
+            for row in col.iter() {
                 buf.push(row.as_char());
                 buf.push('|');
             }
@@ -184,5 +184,28 @@ impl fmt::Display for Board {
         }
 
         write!(f, "{}", buf)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_board_display() {
+        let board = Board::init();
+
+        let test_board = 
+"|r|n|b|q|k|b|n|r|
+|p|p|p|p|p|p|p|p|
+| | | | | | | | |
+| | | | | | | | |
+| | | | | | | | |
+| | | | | | | | |
+|P|P|P|P|P|P|P|P|
+|R|N|B|Q|K|B|N|R|
+";
+
+        assert_eq!(board.to_string(), test_board)
     }
 }
