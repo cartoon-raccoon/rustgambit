@@ -1,5 +1,5 @@
 use crate::pieces::Piece;
-use crate::moves::MoveSet;
+use crate::moves::{MoveSet, Move};
 use crate::board::Board;
 use super::*;
 
@@ -26,7 +26,38 @@ impl Piece for Pawn {
         self.colour
     }
 
-    fn evaluate_moves(&self, board: &mut Board) -> MoveSet {
-        unimplemented!()
+    fn evaluate_moves(&self, board: &Board) -> MoveSet {
+        use Colour::*;
+
+        let o = self.pos.as_tuple();
+        let mut moves = Vec::new();
+
+        match self.colour {
+            White => {
+                if board[o.0 + 1][o.1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1)))
+                }
+                if !board[o.0 + 1][o.1 + 1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                }
+                if !board[o.0 + 1][o.1 - 1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                }
+            }
+
+            Black => {
+                if board[o.0 - 1][o.1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1)))
+                }
+                if !board[o.0 - 1][o.1 + 1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
+                }
+                if !board[o.0 - 1][o.1 - 1].is_empty() {
+                    moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
+                }
+            }
+        }
+        
+        MoveSet::from(moves)
     }
 }
