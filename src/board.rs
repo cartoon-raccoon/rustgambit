@@ -1,9 +1,12 @@
 use std::fmt;
+use std::error::Error;
 
 use crate::pieces::*;
+use crate::moves::Move;
 
 pub struct Board {
     pub board: [[PieceType; 8]; 8],
+    colour: Colour,
     white_cap: Vec<PieceType>,
     black_cap: Vec<PieceType>,
 }
@@ -12,6 +15,7 @@ impl Board {
     pub fn empty() -> Self {
         Board{
             board: [[PieceType::Empty; 8]; 8],
+            colour: Colour::White,
             white_cap: Vec::new(),
             black_cap: Vec::new(),
         }
@@ -153,6 +157,56 @@ impl Board {
         }
     }
 
+    pub fn move_piece(&mut self, mov: Move) -> Result<(), GameError> {
+        //moving the piece at origin to a temp variable
+        let temp = self.board[mov.origin.0][mov.origin.1];
+        let targ = self.board[mov.target.1][mov.target.1];
+
+        //checking that the origin is actually not empty
+        if let Some(colour) = temp.colour() {
+            if colour != self.colour {
+                return Err(GameError::WrongTurn)
+            }
+        } else { //colour returned None, so must be empty
+            assert!(temp.is_empty());
+            return Err(GameError::EmptySpace)
+        }
+
+        //check if target is empty; if not, add target to captures
+        if !targ.is_empty() {
+            self.add_to_captures(self.colour, targ)
+        }
+
+        //making the actual move
+        self.board[mov.origin.0][mov.origin.1] = PieceType::Empty;
+        self.board[mov.target.0][mov.target.1] = temp;
+
+        self.log_move(temp, mov);
+
+        Ok(())
+    }
+
+    pub fn add_to_captures(&mut self, colour: Colour, piece: PieceType) {
+        use Colour::*;
+
+        assert!(!piece.is_empty(), "Empty piece given");
+        assert!(piece.colour() != Some(self.colour), "Colour mismatch");
+
+        match colour {
+            White => {
+                self.white_cap.push(piece)
+            }
+            Black => {
+                self.black_cap.push(piece)
+            }
+        }
+    }
+
+    pub fn log_move(&mut self, piece: PieceType, _mov: Move) {
+        assert!(!piece.is_empty());
+        unimplemented!("logging moves unimplemented")
+    }
+
     pub fn black(&self) -> &[PieceType] {
         &self.black_cap
     }
@@ -167,6 +221,32 @@ impl Board {
                 |col| *col == PieceType::Empty
             )
         )
+    }
+}
+
+#[non_exhaustive]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum GameError {
+    InvalidMove,
+    WrongTurn,
+    EmptySpace,
+}
+
+impl Error for GameError {}
+
+impl fmt::Display for GameError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::InvalidMove => {
+                write!(f, "Invalid move for piece")
+            }
+            Self::WrongTurn => {
+                write!(f, "Wrong colour to make turn")
+            }
+            Self::EmptySpace => {
+                write!(f, "Space on board is empty")
+            }
+        }
     }
 }
 
