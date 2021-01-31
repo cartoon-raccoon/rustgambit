@@ -2,11 +2,11 @@ use std::fmt;
 use std::error::Error;
 
 use crate::pieces::*;
-use crate::moves::Move;
+use crate::moves::{Move, MoveMarker};
 
 pub struct Board {
     pub board: [[PieceType; 8]; 8],
-    colour: Colour,
+    turn: Colour,
     white_cap: Vec<PieceType>,
     black_cap: Vec<PieceType>,
 }
@@ -15,7 +15,7 @@ impl Board {
     pub fn empty() -> Self {
         Board{
             board: [[PieceType::Empty; 8]; 8],
-            colour: Colour::White,
+            turn: Colour::White,
             white_cap: Vec::new(),
             black_cap: Vec::new(),
         }
@@ -34,118 +34,50 @@ impl Board {
         let is_empty = self.is_empty();
 
         //initializing rooks
-        self.board[0][0] = PieceType::Rook {
-            piece: Rook,
-            colour: White, 
-            pos: Position {row: 0, col: 0}
-        };
+        self.board[0][0] = PieceType::Rook(Rook::config(0, 0, White));
 
-        self.board[0][7] = PieceType::Rook {
-            piece: Rook,
-            colour: White,
-            pos: Position {row: 0, col: 7}
-        };
+        self.board[0][7] = PieceType::Rook(Rook::config(0, 7, White));
 
-        self.board[7][0] = PieceType::Rook {
-            piece: Rook,
-            colour: Black,
-            pos: Position {row: 7, col: 0}
-        };
+        self.board[7][0] = PieceType::Rook(Rook::config(7, 0, Black));
 
-        self.board[7][7] = PieceType::Rook {
-            piece: Rook,
-            colour: Black,
-            pos: Position {row: 7, col: 7}
-        };
+        self.board[7][7] = PieceType::Rook(Rook::config(7, 7, Black));
 
         //initializing knights
-        self.board[0][1] = PieceType::Knight {
-            piece: Knight,
-            colour: White,
-            pos: Position {row: 0, col: 1},
-        };
+        self.board[0][1] = PieceType::Knight(Knight::config(0, 1, White));
 
-        self.board[0][6] = PieceType::Knight {
-            piece: Knight,
-            colour: White,
-            pos: Position {row: 0, col: 6},
-        };
+        self.board[0][6] = PieceType::Knight(Knight::config(0, 6, White));
 
-        self.board[7][1] = PieceType::Knight {
-            piece: Knight,
-            colour: Black,
-            pos: Position {row: 7, col: 1},
-        };
+        self.board[7][1] = PieceType::Knight(Knight::config(7, 1, Black));
 
-        self.board[7][6] = PieceType::Knight {
-            piece: Knight,
-            colour: Black,
-            pos: Position {row: 7, col: 6},
-        };
+        self.board[7][6] = PieceType::Knight(Knight::config(7, 6, Black));
 
         //initializing bishops
-        self.board[0][2] = PieceType::Bishop {
-            piece: Bishop,
-            colour: White,
-            pos: Position {row: 0, col: 2},
-        };
+        self.board[0][2] = PieceType::Bishop(Bishop::config(0, 2, White));
 
-        self.board[7][2] = PieceType::Bishop {
-            piece: Bishop,
-            colour: Black,
-            pos: Position {row: 7, col: 2},
-        };
+        self.board[0][5] = PieceType::Bishop(Bishop::config(0, 5, White));
 
-        self.board[0][5] = PieceType::Bishop {
-            piece: Bishop,
-            colour: White,
-            pos: Position {row: 0, col: 5},
-        };
+        self.board[7][2] = PieceType::Bishop(Bishop::config(7, 2, Black));
 
-        self.board[7][5] = PieceType::Bishop {
-            piece: Bishop,
-            colour: Black,
-            pos: Position {row: 7, col: 5},
-        };
+        self.board[7][5] = PieceType::Bishop(Bishop::config(7, 5, Black));
 
         //initializing queens and kings
-        self.board[0][3] = PieceType::Queen {
-            piece: Queen,
-            colour: White,
-            pos: Position {row: 0, col: 3},
-        };
+        self.board[0][3] = PieceType::Queen(Queen::config(0, 3, White));
 
-        self.board[0][4] = PieceType::King {
-            piece: King,
-            colour: White,
-            pos: Position {row: 0, col: 4}
-        };
+        self.board[0][4] = PieceType::King(King::config(0, 4, White));
 
-        self.board[7][3] = PieceType::Queen {
-            piece: Queen,
-            colour: Black,
-            pos: Position {row: 7, col: 3},
-        };
+        self.board[7][3] = PieceType::Queen(Queen::config(7, 3, Black));
 
-        self.board[7][4] = PieceType::King {
-            piece: King,
-            colour: Black,
-            pos: Position {row: 7, col: 4}
-        };
+        self.board[7][4] = PieceType::King(King::config(7, 4, Black));
 
         //initializing pawns
         for i in 0..8 {
-            self.board[1][i] = PieceType::Pawn {
-                piece: Pawn,
-                colour: White,
-                pos: Position {row: 1, col: i}
-            };
+            self.board[1][i] = PieceType::Pawn(
+                Pawn::config(1, i, White)
+            );
 
-            self.board[6][i] = PieceType::Pawn {
-                piece: Pawn,
-                colour: Black,
-                pos: Position {row: 6, col: i}
-            };
+            self.board[6][i] = PieceType::Pawn(
+                Pawn::config(6, i, Black)
+            );
         }
 
         if !is_empty {
@@ -159,12 +91,12 @@ impl Board {
 
     pub fn move_piece(&mut self, mov: Move) -> Result<(), GameError> {
         //moving the piece at origin to a temp variable
-        let temp = self.board[mov.origin.0][mov.origin.1];
-        let targ = self.board[mov.target.1][mov.target.1];
+        let temp = self.board[mov.origin().0][mov.origin().1];
+        let targ = self.board[mov.target().1][mov.target().1];
 
         //checking that the origin is actually not empty
         if let Some(colour) = temp.colour() {
-            if colour != self.colour {
+            if colour != self.turn {
                 return Err(GameError::WrongTurn)
             }
         } else { //colour returned None, so must be empty
@@ -174,12 +106,12 @@ impl Board {
 
         //check if target is empty; if not, add target to captures
         if !targ.is_empty() {
-            self.add_to_captures(self.colour, targ)
+            self.add_to_captures(self.turn, targ)
         }
 
         //making the actual move
-        self.board[mov.origin.0][mov.origin.1] = PieceType::Empty;
-        self.board[mov.target.0][mov.target.1] = temp;
+        self.board[mov.origin().0][mov.origin().1] = PieceType::Empty;
+        self.board[mov.target().0][mov.target().1] = temp;
 
         self.log_move(temp, mov);
 
@@ -190,7 +122,7 @@ impl Board {
         use Colour::*;
 
         assert!(!piece.is_empty(), "Empty piece given");
-        assert!(piece.colour() != Some(self.colour), "Colour mismatch");
+        assert!(piece.colour() != Some(self.turn), "Colour mismatch");
 
         match colour {
             White => {
@@ -205,6 +137,14 @@ impl Board {
     pub fn log_move(&mut self, piece: PieceType, _mov: Move) {
         assert!(!piece.is_empty());
         unimplemented!("logging moves unimplemented")
+    }
+
+    pub fn flip_turn(&mut self) {
+        if self.turn == Colour::Black {
+            self.turn = Colour::White
+        } else {
+            self.turn = Colour::Black
+        }
     }
 
     pub fn black(&self) -> &[PieceType] {
