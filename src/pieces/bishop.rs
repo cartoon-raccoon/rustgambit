@@ -8,10 +8,6 @@ pub const POINTS: u8 = 3;
 pub struct Bishop;
 
 impl Piece for Bishop {
-    fn move_piece(&self, board: &mut Board) {
-
-    }
-
     fn evaluate_moves(&self, board: &mut Board) -> MoveSet {
         unimplemented!()
     }
