@@ -11,8 +11,8 @@ pub struct Knight {
     pos: Position,
 }
 
-impl Piece for Knight {
-    fn config(row: usize, col: usize, colour: Colour) -> Self {
+impl Knight {
+    pub fn config(row: usize, col: usize, colour: Colour) -> Self {
         let pos = Position {row: row, col: col};
 
         Self {
@@ -20,10 +20,17 @@ impl Piece for Knight {
             pos: pos,
         }
     }
+}
 
+impl Piece for Knight {
     #[inline]
     fn colour(&self) -> Colour {
         self.colour
+    }
+
+    #[inline]
+    fn position(&self) -> Position {
+        self.pos
     }
     
     fn evaluate_moves(&self, board: &Board) -> MoveSet {

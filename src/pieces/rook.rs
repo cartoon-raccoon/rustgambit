@@ -11,8 +11,8 @@ pub struct Rook {
     pos: Position,
 }
 
-impl Piece for Rook {
-    fn config(row: usize, col: usize, colour: Colour) -> Self {
+impl Rook {
+    pub fn config(row: usize, col: usize, colour: Colour) -> Self {
         let pos = Position {row: row, col: col};
 
         Self {
@@ -20,10 +20,17 @@ impl Piece for Rook {
             pos: pos,
         }
     }
-    
+}
+
+impl Piece for Rook {
     #[inline]
     fn colour(&self) -> Colour {
         self.colour
+    }
+
+    #[inline]
+    fn position(&self) -> Position {
+        self.pos
     }
     
     fn evaluate_moves(&self, board: &Board) -> MoveSet {

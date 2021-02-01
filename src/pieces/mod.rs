@@ -17,8 +17,8 @@ pub use king::King;
 
 /// Defines the basic moves a piece can take.
 pub trait Piece {
-    fn config(row: usize, col: usize, colour: Colour) -> Self;
     fn colour(&self) -> Colour;
+    fn position(&self) -> Position;
     fn evaluate_moves(&self, board: &Board) -> MoveSet;
 }
 
@@ -61,11 +61,26 @@ impl PieceType {
         false
     }
 
+    #[inline]
     pub fn is_king(&self) -> bool {
         if let PieceType::King(_) = self {
             return true
         }
         false
+    }
+
+    pub fn inner(&self) -> Option<&dyn Piece> {
+        use PieceType::*;
+
+        match self {
+            Pawn(p) => Some(p),
+            Rook(r) => Some(r),
+            Knight(k) => Some(k),
+            Bishop(b) => Some(b),
+            King(k) => Some(k),
+            Queen(q) => Some(q),
+            Empty => None,
+        }
     }
 
     /// Returns the corresponding notation for the piece.

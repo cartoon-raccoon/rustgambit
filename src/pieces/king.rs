@@ -9,8 +9,8 @@ pub struct King {
     pos: Position,
 }
 
-impl Piece for King {
-    fn config(row: usize, col: usize, colour: Colour) -> Self {
+impl King {
+    pub fn config(row: usize, col: usize, colour: Colour) -> Self {
         let pos = Position {row: row, col: col};
 
         Self {
@@ -18,10 +18,17 @@ impl Piece for King {
             pos: pos,
         }
     }
-    
+}
+
+impl Piece for King {
     #[inline]
     fn colour(&self) -> Colour {
         self.colour
+    }
+
+    #[inline]
+    fn position(&self) -> Position {
+        self.pos
     }
     
     fn evaluate_moves(&self, board: &Board) -> MoveSet {

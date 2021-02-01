@@ -11,8 +11,8 @@ pub struct Pawn {
     pos: Position,
 }
 
-impl Piece for Pawn {
-    fn config(row: usize, col: usize, colour: Colour) -> Self {
+impl Pawn {
+    pub fn config(row: usize, col: usize, colour: Colour) -> Self {
         let pos = Position {row: row, col: col};
 
         Self {
@@ -20,10 +20,17 @@ impl Piece for Pawn {
             pos: pos,
         }
     }
+}
 
+impl Piece for Pawn {
     #[inline]
     fn colour(&self) -> Colour {
         self.colour
+    }
+
+    #[inline]
+    fn position(&self) -> Position {
+        self.pos
     }
 
     fn evaluate_moves(&self, board: &Board) -> MoveSet {
@@ -40,7 +47,7 @@ impl Piece for Pawn {
                 if !board[o.0 + 1][o.1 + 1].is_empty() {
                     if board[o.0 + 1][o.1 + 1].colour() != Some(White) {
                         if board[o.0 + 1][o.1 + 1].is_king() {
-                            return MoveSet::is_check()
+                            return MoveSet::check()
                         }
                         moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
                     }
@@ -48,7 +55,7 @@ impl Piece for Pawn {
                 if !board[o.0 + 1][o.1 - 1].is_empty() {
                     if board[o.0 + 1][o.1 - 1].colour() != Some(White) { 
                         if board[o.0 + 1][o.1 - 1].is_king() {
-                            return MoveSet::is_check()
+                            return MoveSet::check()
                         }                   
                         moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
                     }
@@ -62,7 +69,7 @@ impl Piece for Pawn {
                 if !board[o.0 - 1][o.1 + 1].is_empty() {
                     if board[o.0 - 1][o.1 + 1].colour() != Some(Black) {
                         if board[o.0 - 1][o.1 + 1].is_king() {
-                            return MoveSet::is_check()
+                            return MoveSet::check()
                         }
                         moves.push(Move::construct(o, (o.0 + 1, o.1 + 1)))
                     }
@@ -70,7 +77,7 @@ impl Piece for Pawn {
                 if !board[o.0 - 1][o.1 - 1].is_empty() {
                     if board[o.0 - 1][o.1 - 1].colour() != Some(Black) {  
                         if board[o.0 - 1][o.1 - 1].is_king() {
-                            return MoveSet::is_check()
+                            return MoveSet::check()
                         }                  
                         moves.push(Move::construct(o, (o.0 + 1, o.1 - 1)))
                     }
