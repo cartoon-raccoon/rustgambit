@@ -151,16 +151,53 @@ impl Board {
         }
     }
 
-    pub fn find_king(&self, c: Colour) -> (usize, usize) {
-        let mut kingpos = (0, 0);
+    pub fn eval_gamestate(&mut self) -> GameState {
+        let _kingpos = self.find_king(self.turn);
+
+        for pos in self.enum_opposite_pieces() {
+            let (row, col) = pos.as_tuple();
+
+            if self[row][col]
+                .inner().unwrap()
+                .evaluate_moves(&self)
+                .is_checking() {
+                self.check = Some(self.turn);
+                return GameState::Check(self.turn);
+                //todo: work this outtt
+            }
+        }
+
+        unimplemented!()
+    }
+
+    fn enum_opposite_pieces(&self) -> Vec<Position> {
+
+        let mut positions = Vec::new();
 
         for i in 0..8 {
-            kingpos.0 = i;
             for j in 0..8 {
-                kingpos.1 = j;
+                if let Some(colour) = self[i][j].colour() {
+                    if colour != self.turn {
+                        positions.push(self[i][j]
+                            .inner()
+                            // Unwrap should never panic because colour is not None
+                            .unwrap()
+                            .position())
+                    }
+                }
+            }
+        }
+
+        positions
+    }
+
+    pub(crate) fn find_king(&self, c: Colour) -> Position {
+
+        for i in 0..8 {
+            for j in 0..8 {
                 if let PieceType::King(k) = self[i][j] {
                     if k.colour() == c {
-                        return kingpos
+                        return k.position()
                     }
                 }
             }
@@ -229,6 +266,21 @@ impl IndexMut<usize> for Board {
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         &mut self.board[idx]
     }
+}
+
+/// Denotes the state of the game.
+#[derive(Clone, Copy, PartialEq)]
+pub enum GameState {
+    /// The gameboard is in a neutral state.
+    /// No one is in check or checkmate, and there are available moves.
+    None,
+    /// The king of the returned colour is in check.
+    Check(Colour),
+    /// The game is in a stalemate.
+    Stalemate,
+    /// The king of the returned colour is in checkmate.
+    /// The game is over.
+    Checkmate(Colour),
 }
 
 #[non_exhaustive]
