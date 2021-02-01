@@ -35,7 +35,7 @@ impl MoveSet {
         }
     }
 
-    pub fn is_check() -> Self {
+    pub fn check() -> Self {
         MoveSet {
             is_checking: true,
             moves: Vec::new(),
@@ -43,12 +43,21 @@ impl MoveSet {
     }
 
     /// Returns the number of Moves in the MoveSet
+    #[inline]
     pub fn len(&self) -> usize {
         self.moves.len()
     }
 
+    /// Returns whether the MoveSet is empty.
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.moves.is_empty()
+    }
+
+    /// Returns whether the piece that generated the MoveSet is in check.
+    #[inline]
+    pub fn is_checking(&self) -> bool {
+        self.is_checking
     }
 
     /// Returns an iterator over the contents of the MoveSet
