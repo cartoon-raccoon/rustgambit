@@ -203,7 +203,7 @@ impl Board {
             }
         }
 
-        unreachable!("unreachable code in Board::find_king()")
+        panic!("Could not find king of colour {:?}", c)
     }
 
     #[inline]
