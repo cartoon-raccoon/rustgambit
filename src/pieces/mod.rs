@@ -130,7 +130,7 @@ impl PieceType {
     }
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Colour {
     Black,
     White,
