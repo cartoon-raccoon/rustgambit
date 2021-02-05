@@ -23,15 +23,12 @@ impl MoveSet {
     /// and its associated Item implements MoveMarker.
     pub fn from<T: IntoIterator>(iter: T) -> Self
     where T::Item: MoveMarker {
-        let mut moves = Vec::new();
-
-        for item in iter {
-            moves.push(Move::construct(item.target(), item.origin()));
-        }
 
         MoveSet {
             is_checking: false,
-            moves: moves
+            moves: iter.into_iter().map(|item| {
+                Move::construct(item.target(), item.origin())
+            }).collect()
         }
     }
 
